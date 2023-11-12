@@ -1,8 +1,6 @@
 import argparse
-import os
-import hashlib
 import configparser
-import re
+import os
 
 
 class Song:
@@ -70,165 +68,6 @@ def extract_song_ini_properties(filepath):
     return song_properties
 
 
-def extract_chart_difficulties(filepath):
-    parser = configparser.ConfigParser(comment_prefixes=("{", "}"), strict=False)
-    parser.read(filepath, encoding = "utf-8-sig")
-    difficulty_mapping = {
-        "ExpertSingle": 
-            {
-                "instrument": "guitar", 
-                "difficulty": "expert"
-            },
-        "HardSingle": 
-            {
-                "instrument": "guitar", 
-                "difficulty": "hard"
-            },
-        "MediumSingle": 
-            {
-                "instrument": "guitar", 
-                "difficulty": "medium"
-            },
-        "EasySingle": 
-            {
-                "instrument": "guitar", 
-                "difficulty": "easy"
-            },
-        "ExpertDoubleBass": 
-            {
-                "instrument": "bass", 
-                "difficulty": "expert"
-            },
-        "HardDoubleBass": 
-            {
-                "instrument": "bass", 
-                "difficulty": "hard"
-            },
-        "MediumDoubleBass": 
-            {
-                "instrument": "bass", 
-                "difficulty": "medium"
-            },
-        "EasyDoubleBass": 
-            {
-                "instrument": "bass", 
-                "difficulty": "easy"
-            },
-        "ExpertDoubleRhythm": 
-            {
-                "instrument": "rhythm", 
-                "difficulty": "expert"
-            },
-        "HardDoubleRhythm": 
-            {
-                "instrument": "rhythm", 
-                "difficulty": "hard"
-            },
-        "MediumDoubleRhythm": 
-            {
-                "instrument": "rhythm", 
-                "difficulty": "medium"
-            },
-        "EasyDoubleRhythm": 
-            {
-                "instrument": "rhythm", 
-                "difficulty": "easy"
-            },
-        "ExpertKeyboard": 
-            {
-                "instrument": "keys", 
-                "difficulty": "expert"
-            },
-        "HardKeyboard": 
-            {
-                "instrument": "keys", 
-                "difficulty": "hard"
-            },
-        "MediumKeyboard": 
-            {
-                "instrument": "keys", 
-                "difficulty": "medium"
-            },
-        "EasyKeyboard": 
-            {
-                "instrument": "keys", 
-                "difficulty": "easy"
-            },
-        "ExpertDrums": 
-            {
-                "instrument": "drums", 
-                "difficulty": "expert"
-            },
-        "HardDrums": 
-            {
-                "instrument": "drums", 
-                "difficulty": "hard"
-            },
-        "MediumDrums": 
-            {
-                "instrument": "drums", 
-                "difficulty": "medium"
-            },
-        "EasyDrums": 
-            {
-                "instrument": "drums", 
-                "difficulty": "easy"
-            },
-        "ExpertGHLGuitar": 
-            {
-                "instrument": "guitarghl", 
-                "difficulty": "expert"
-            },
-        "HardGHLGuitar": 
-            {
-                "instrument": "guitarghl", 
-                "difficulty": "hard"
-            },
-        "MediumGHLGuitar": 
-            {
-                "instrument": "guitarghl", 
-                "difficulty": "medium"
-            },
-        "EasyGHLGuitar": 
-            {
-                "instrument": "guitarghl", 
-                "difficulty": "easy"
-            },
-        "ExpertGHLBass": 
-            {
-                "instrument": "bassghl", 
-                "difficulty": "expert"
-            },
-        "HardGHLBass": 
-            {
-                "instrument": "bassghl", 
-                "difficulty": "hard"
-            },
-        "MediumGHLBass": 
-            {
-                "instrument": "bassghl", 
-                "difficulty": "medium"
-            },
-        "EasyGHLBass": 
-            {
-                "instrument": "bassghl", 
-                "difficulty": "easy"
-            },
-    }
-
-    difficulties = {}
-    for tag, difficulty in difficulty_mapping.items():
-        print(f"Looking for {tag}")
-        if tag in parser.sections():
-            instrument = difficulty["instrument"]
-            difficulty = difficulty["difficulty"]
-            data = str(parser[tag]).strip()
-            md5_hash = hashlib.md5(data.encode()).hexdigest()
-            difficulties[instrument][difficulty] = md5_hash
-
-    return {"difficulty": difficulties}
-
-
 def find_song_folders(base_folder):
     for root, dirs, files in os.walk(base_folder):
         if "song.ini" in files and "notes.chart" in files:
@@ -240,13 +79,11 @@ def scan_songs(base_folder):
     song_count = 0
     for song_folder in find_song_folders(base_folder):
         song_ini_path = os.path.join(song_folder, "song.ini")
-        notes_chart_path = os.path.join(song_folder, "notes.chart")
+        # notes_chart_path = os.path.join(song_folder, "notes.chart")
         try:
             print(f"Trying to scan song in {song_folder}")
             song_properties = extract_song_ini_properties(song_ini_path)
             print("INI file parsed successfully")
-            song_properties.update(extract_chart_difficulties(notes_chart_path))
-            print("CHART file parsed successfully")
 
             song = Song(**song_properties)
             songs.append(song)
