@@ -13,8 +13,17 @@ class Song:
         year=None,
         song_length=None,
         charter=None,
-        intensity={},
-        difficulty={},
+        intensity_guitar=None,
+        intensity_rhythm=None,
+        intensity_bass=None,
+        intensity_guitar_coop=None,
+        intensity_drums=None,
+        intensity_drums_real=None,
+        intensity_guitarghl=None,
+        intensity_bassghl=None,
+        intensity_rhythm_ghl=None,
+        intensity_guitar_coop_ghl=None,
+        intensity_keys=None,
     ):
         self.song_title = song_title
         self.artist = artist
@@ -23,14 +32,23 @@ class Song:
         self.year = year
         self.song_length = song_length
         self.charter = charter
-        self.intensity = intensity
-        self.difficulty = difficulty
+        self.intensity_guitar = intensity_guitar
+        self.intensity_rhythm = intensity_rhythm
+        self.intensity_bass = intensity_bass
+        self.intensity_guitar_coop = intensity_guitar_coop
+        self.intensity_drums = intensity_drums
+        self.intensity_drums_real = intensity_drums_real
+        self.intensity_guitarghl = intensity_guitarghl
+        self.intensity_bassghl = intensity_bassghl
+        self.intensity_rhythm_ghl = intensity_rhythm_ghl
+        self.intensity_guitar_coop_ghl = intensity_guitar_coop_ghl
+        self.intensity_keys = intensity_keys
 
     def __repr__(self):
-        return f"Song(title={self.song_title}, artist={self.artist}, intensity={self.intensity}, difficulty={self.difficulty})"
+        return f"Song(title={self.song_title}, artist={self.artist})"
 
     def __str__(self) -> str:
-        return f"Song(title={self.song_title}, artist={self.artist}, intensity={self.intensity}, difficulty={self.difficulty})"
+        return f"Song(title={self.song_title}, artist={self.artist})"
 
 
 def extract_song_ini_properties(filepath):
@@ -42,29 +60,27 @@ def extract_song_ini_properties(filepath):
     song_properties["song_title"] = parser["Song"]["name"]
     optional_keys = ["artist", "album", "genre", "year", "song_length", "charter"]
     intensity_keys = {
-        "diff_guitar": "guitar",
-        "diff_rhythm": "rhythm",
-        "diff_bass": "bass",
-        "diff_guitar_coop": "guitar_coop",
-        "diff_drums": "drums",
-        "diff_drums_real": "drums_real",
-        "diff_guitarghl": "guitarghl",
-        "diff_bassghl": "bassghl",
-        "diff_rhythm_ghl": "rhythm_ghl",
-        "diff_guitar_coop_ghl": "guitar_coop_ghl",
-        "diff_keys": "keys",
+        "diff_guitar": "intensity_guitar",
+        "diff_rhythm": "intensity_rhythm",
+        "diff_bass": "intensity_bass",
+        "diff_guitar_coop": "intensity_guitar_coop",
+        "diff_drums": "intensity_drums",
+        "diff_drums_real": "intensity_drums_real",
+        "diff_guitarghl": "intensity_guitarghl",
+        "diff_bassghl": "intensity_bassghl",
+        "diff_rhythm_ghl": "intensity_rhythm_ghl",
+        "diff_guitar_coop_ghl": "intensity_guitar_coop_ghl",
+        "diff_keys": "intensity_keys",
     }
 
     for key in optional_keys:
         if key in parser["Song"]:
             song_properties[key] = parser["Song"][key]
 
-    intensity = {}
     for ini_key, intensity_key in intensity_keys.items():
         if ini_key in parser["Song"]:
-            intensity[intensity_key] = int(parser["Song"][ini_key])
-    song_properties["intensity"] = intensity
-
+            song_properties[intensity_key] = int(parser["Song"][ini_key])
+    print(song_properties)
     return song_properties
 
 
